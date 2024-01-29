@@ -6,11 +6,7 @@ ThisBuild / version      := "0.1.0-SNAPSHOT"
 
 lazy val blogService = project
   .in(file("blog-service"))
-  .settings(
-    name                 := "blog-service",
-    libraryDependencies ++= Seq(Dependencies.zio),
-    mainClass in Compile := Some("com.vbrenister.blog.Main")
-  )
+  .settings(name := "blog-service", libraryDependencies ++= Seq(Dependencies.zio, Dependencies.zioHttp))
   .dependsOn(sharedDomain.jvm)
 
 lazy val blogUI = project
