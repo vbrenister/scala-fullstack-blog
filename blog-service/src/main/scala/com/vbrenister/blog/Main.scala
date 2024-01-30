@@ -5,13 +5,22 @@ import zio.json._
 import zio.http._
 
 import com.vbrenister.blog.domain.blog.Post
+import com.vbrenister.blog.http.BlogController
+import com.vbrenister.blog.http.BlogEndpoints
+import com.vbrenister.blog.http.BlogApp
+import sttp.tapir.server.ziohttp.ZioHttpInterpreter
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
+import sttp.tapir.swagger.SwaggerUIOptions
+import com.vbrenister.blog.http.BlogApp
 
 object Main extends ZIOAppDefault {
 
-  val app: HttpApp[Any] =
-    Routes(Method.GET / "text" -> handler(Response.json(Post(1, "title", "content").toJson))).toHttpApp
+  val program =
+    ZIO
+      .service[HttpApp[Any]]
+      .flatMap(Server.serve)
 
   override val run =
-    Server.serve(app).provide(Server.default)
+    program.provide(Server.default, BlogApp.layer, BlogController.layer)
 
 }
